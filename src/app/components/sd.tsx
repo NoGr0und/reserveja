@@ -60,10 +60,10 @@ export default ItemsSidebar;
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar side="left">
       <SidebarHeader>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-primary text-center text-3xl font-bold">
+          <SidebarGroupLabel className="text-primary p-4 text-center text-3xl font-bold">
             <div className="flex items-center justify-center gap-2">
               <MousePointer2 className="text-blue-600" />
               <span>Reserve Ja</span>
