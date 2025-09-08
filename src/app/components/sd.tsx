@@ -19,38 +19,38 @@ import {
 import {
   Calendar,
   ChevronUp,
+  Clock,
   Home,
-  Inbox,
   MousePointer2,
-  Search,
   Settings,
   User2,
+  Users,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const ItemsSidebar = [
   {
-    title: "Home",
-    url: "#",
+    title: "Dashboard",
+    url: "./dashboard",
     icon: Home,
   },
   {
     title: "Servicos",
-    url: "#",
-    icon: Inbox,
+    url: "./dashboard/services",
+    icon: Clock,
   },
   {
-    title: "Calendar",
+    title: "Agendamentos",
     url: "#",
     icon: Calendar,
   },
   {
-    title: "Search",
+    title: "Clientes",
     url: "#",
-    icon: Search,
+    icon: Users,
   },
   {
-    title: "Settings",
+    title: "Configuracao",
     url: "#",
     icon: Settings,
   },

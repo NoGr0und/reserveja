@@ -24,7 +24,7 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-blue-500">0</p>
+          <p className="text-3xl font-bold">0</p>
         </CardContent>
         <CardFooter>0 Pendencias</CardFooter>
       </Card>
@@ -39,7 +39,7 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-blue-500">2</p>
+          <p className="text-3xl font-bold">2</p>
         </CardContent>
         <CardFooter>2 Ativos</CardFooter>
       </Card>
@@ -54,7 +54,7 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-blue-500">1</p>
+          <p className="text-3xl font-bold">1</p>
         </CardContent>
         <CardFooter>1 Cliente</CardFooter>
       </Card>
@@ -67,7 +67,7 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-blue-500">R$ 0,00</p>
+          <p className="text-3xl font-bold text-green-700">R$ 0,00</p>
         </CardContent>
         <CardFooter>Servicos Comcluidos</CardFooter>
       </Card>

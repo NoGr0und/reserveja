@@ -1,19 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Dashcards } from "./components/lcard";
-import { Bdashcard } from "./components/bcard";
+import { Dashcards } from "../components/lcard";
 import { Bell } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Bdashcard } from "../components/bcard";
+import { Notificationbt } from "../components/notficationh";
 
-const Home = () => {
+const Dashboard = () => {
   return (
     <>
       <header>
-        <div className="left-0 flex w-full justify-end bg-gray-950 p-6">
-          <Button className="bg-blue-400 text-white">
-            <Bell />
-          </Button>
-        </div>
-        <Separator />
+        <Notificationbt />
         <div className="flex items-center justify-between p-6">
           {" "}
           <div className="">
@@ -37,4 +33,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Dashboard;
