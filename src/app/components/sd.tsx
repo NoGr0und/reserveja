@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -21,12 +23,14 @@ import {
   ChevronUp,
   Clock,
   Home,
+  LogOut,
   MousePointer2,
   Settings,
   User2,
   Users,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ItemsSidebar = [
   {
@@ -59,6 +63,16 @@ const ItemsSidebar = [
 export default ItemsSidebar;
 
 export function AppSidebar() {
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    // TODO: Futuramente, aqui pode ser adicionada lógica para:
+    // 1. Invalidar token JWT no backend
+    // 2. Limpar dados sensíveis do localStorage
+    // 3. Registrar evento de logout para auditoria
+    logout();
+  };
+
   return (
     <Sidebar side="left">
       <SidebarHeader>
@@ -96,7 +110,7 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Username
+                  <User2 /> {user?.name || 'Usuário'}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -106,13 +120,14 @@ export function AppSidebar() {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <DropdownMenuItem>
-                  <span>Account</span>
+                  <span>Conta</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <span>Billing</span>
+                  <span>Faturamento</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sair</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -4,10 +4,11 @@ import { Bell } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Bdashcard } from "../components/bcard";
 import { Notificationbt } from "../components/notficationh";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const Dashboard = () => {
   return (
-    <>
+    <ProtectedRoute>
       <header>
         <Notificationbt />
         <div className="flex items-center justify-between p-6">
@@ -29,7 +30,7 @@ const Dashboard = () => {
         </div>
         <div></div>
       </div>
-    </>
+    </ProtectedRoute>
   );
 };
 

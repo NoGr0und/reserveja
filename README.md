@@ -1,24 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏢 Reserveja - Sistema de Reservas
 
-## Getting Started
+Este é um projeto [Next.js](https://nextjs.org) com sistema completo de autenticação e controle de rotas.
 
-First, run the development server:
+## 🚀 Início Rápido
+
+Execute o servidor de desenvolvimento:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔐 Sistema de Autenticação
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O projeto inclui um sistema completo de autenticação com:
+
+- ✅ **Login e Cadastro** - Páginas funcionais com validação
+- ✅ **Sidebar Condicional** - Ocultada em login/cadastro, visível no dashboard
+- ✅ **Proteção de Rotas** - Redirecionamento automático baseado em autenticação
+- ✅ **Persistência** - Dados salvos no localStorage
+
+### 🧪 Credenciais de Teste
+```
+Email: admin@exemplo.com
+Senha: 123456
+```
+
+### 📚 Documentação Completa
+Para informações detalhadas sobre o sistema de autenticação, consulte:
+**[AUTH_SYSTEM.md](./AUTH_SYSTEM.md)** - Documentação completa do sistema
+
+Este projeto usa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimizar automaticamente e carregar [Geist](https://vercel.com/font), uma nova família de fontes da Vercel.
 
 ## Learn More
 
