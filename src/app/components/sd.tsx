@@ -31,12 +31,12 @@ import { Separator } from "@/components/ui/separator";
 const ItemsSidebar = [
   {
     title: "Dashboard",
-    url: "./dashboard",
+    url: "/dashboard",
     icon: Home,
   },
   {
     title: "Servicos",
-    url: "./dashboard/services",
+    url: "/dashboard/services",
     icon: Clock,
   },
   {
