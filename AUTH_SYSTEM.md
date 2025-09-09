@@ -604,20 +604,31 @@ Sidebar (sd.tsx)
 
 ## 📦 Dependências Instaladas
 
+### **Dependências Atuais (já no package.json):**
 ```bash
-# Dependências adicionadas:
-npm install @radix-ui/react-label
-npm install @radix-ui/react-select
-npm install lucide-react
-npm install class-variance-authority
+# UI Components
+@radix-ui/react-label@2.1.7
+@radix-ui/react-select@2.2.6
+lucide-react@0.542.0
+class-variance-authority@0.7.1
 
-# Para produção (futuro):
-npm install next-auth
-npm install bcryptjs
-npm install jsonwebtoken
-npm install @types/bcryptjs
-npm install @types/jsonwebtoken
+# Autenticação (prontas para produção)
+next-auth@4.24.11
+bcryptjs@3.0.2
+jsonwebtoken@9.0.2
+@types/jsonwebtoken@9.0.10
 ```
+
+### **Instalação Automática:**
+```bash
+# Todas as dependências são instaladas automaticamente com:
+npm install
+```
+
+### **Nota Importante:**
+- ✅ **@types/bcryptjs** não é necessário - o bcryptjs já inclui suporte nativo ao TypeScript
+- ✅ **Todas as versões** estão fixadas no package.json para garantir compatibilidade
+- ✅ **Instalação única** - basta executar `npm install` após clonar o repositório
 
 ---
 

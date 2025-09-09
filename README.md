@@ -4,13 +4,27 @@ Este é um projeto [Next.js](https://nextjs.org) com sistema completo de autenti
 
 ## 🚀 Início Rápido
 
-Execute o servidor de desenvolvimento:
-
+### **1. Instalação das Dependências**
 ```bash
+# Clone o repositório e instale as dependências
+npm install
+```
+
+### **2. Executar o Projeto**
+```bash
+# Execute o servidor de desenvolvimento
 npm run dev
 ```
 
+### **3. Acessar a Aplicação**
 Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
+
+### **📦 Dependências Incluídas**
+O projeto já inclui todas as dependências necessárias:
+- ✅ **UI Components** - Radix UI, Lucide React
+- ✅ **Autenticação** - NextAuth.js, bcryptjs, jsonwebtoken
+- ✅ **TypeScript** - Tipos para todas as dependências
+- ✅ **Styling** - Tailwind CSS, class-variance-authority
 
 ## 🔐 Sistema de Autenticação
 
