@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Dashcards } from "../components/lcard";
-import { Bell } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { Bdashcard } from "../components/bcard";
 import { Notificationbt } from "../components/notficationh";
 import { ProtectedRoute } from "@/components/ProtectedRoute";

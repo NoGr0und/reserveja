@@ -35,12 +35,12 @@ import { useAuth } from "@/contexts/AuthContext";
 const ItemsSidebar = [
   {
     title: "Dashboard",
-    url: "./dashboard",
+    url: "/dashboard",
     icon: Home,
   },
   {
     title: "Servicos",
-    url: "./dashboard/services",
+    url: "/dashboard/services",
     icon: Clock,
   },
   {
