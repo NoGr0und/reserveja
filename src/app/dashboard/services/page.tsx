@@ -1,6 +1,7 @@
 import { Notificationbt } from "@/app/components/notficationh";
 import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Cardser } from "@/app/components/cards";
 
 const services = () => {
   return (
@@ -20,6 +21,9 @@ const services = () => {
           </div>
         </div>
       </header>
+      <div>
+        <Cardser />
+      </div>
     </ProtectedRoute>
   );
 };

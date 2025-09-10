@@ -11,9 +11,9 @@ import { Eye } from "lucide-react";
 
 export function Bdashcard() {
   return (
-    <div className="grid gap-6 p-6 lg:grid-cols-2">
+    <div className="grid gap-4 p-4 sm:grid-cols-1 sm:p-6 lg:grid-cols-2">
       {" "}
-      <Card className="flex h-90 min-h-64 flex-col justify-start pt-6 pb-6">
+      <Card className="flex min-h-64 w-full flex-col justify-start pt-6 pb-6">
         <CardHeader className="flex flex-col items-start space-y-0">
           <CardTitle className="flex justify-items-start text-sm font-medium">
             <p className="font-bold">Próximos Agendamentos</p>
@@ -24,23 +24,21 @@ export function Bdashcard() {
           <CardAction></CardAction>
         </CardHeader>
 
-        <CardContent>
-          <div className="space-y-4">
-            {" "}
-            <p className="text-muted-foreground pt-15 text-center font-bold">
+        <CardContent className="flex flex-grow flex-col">
+          <div className="flex flex-grow items-center justify-center">
+            <p className="text-muted-foreground text-center font-bold">
               Nenhum Agendamento para Hoje
             </p>
           </div>
-          <div className="pt-17">
-            {" "}
-            <Button variant="outline" className="mt-4 w-full bg-transparent">
-              <Eye />
+          <div className="mt-4">
+            <Button variant="outline" className="w-full bg-transparent">
+              <Eye className="mr-2 h-4 w-4" />
               Ver Todos os Agendamentos
             </Button>
           </div>
         </CardContent>
       </Card>
-      <Card className="flex h-90 min-h-64 flex-col justify-start pt-6 pb-6">
+      <Card className="flex min-h-64 w-full flex-col justify-start pt-6 pb-6">
         <CardHeader className="flex flex-col items-start space-y-0">
           <CardTitle className="flex justify-items-start text-sm font-medium">
             <p className="font-bold">Meus Servicos</p>
@@ -51,17 +49,15 @@ export function Bdashcard() {
           <CardAction></CardAction>
         </CardHeader>
 
-        <CardContent>
-          <div className="space-y-4">
-            {" "}
-            <p className="text-muted-foreground pt-15 text-center font-bold">
+        <CardContent className="flex flex-grow flex-col">
+          <div className="flex flex-grow items-center justify-center">
+            <p className="text-muted-foreground text-center font-bold">
               * Falta Adicionar o BD pra fazer esse
             </p>
           </div>
-          <div className="pt-17">
-            {" "}
-            <Button variant="outline" className="mt-4 w-full bg-transparent">
-              <Eye />
+          <div className="mt-4">
+            <Button variant="outline" className="w-full bg-transparent">
+              <Eye className="mr-2 h-4 w-4" />
               Gerenciar Servicos
             </Button>
           </div>

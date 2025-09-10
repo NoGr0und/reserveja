@@ -11,9 +11,9 @@ import { Calendar, CircleDollarSign, Clock, Users } from "lucide-react";
 
 export function Dashcards() {
   return (
-    <div className="grid items-center gap-4 p-6 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid items-center gap-4 p-4 sm:grid-cols-1 sm:p-6 md:grid-cols-2 lg:grid-cols-4">
       {" "}
-      <Card className="w-95 justify-center py-4">
+      <Card className="w-full justify-center py-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             Agendamentos Hoje
@@ -28,7 +28,7 @@ export function Dashcards() {
         </CardContent>
         <CardFooter>0 Pendencias</CardFooter>
       </Card>
-      <Card className="w-95 justify-center py-4">
+      <Card className="w-full justify-center py-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             Total de Servicos
@@ -43,7 +43,7 @@ export function Dashcards() {
         </CardContent>
         <CardFooter>2 Ativos</CardFooter>
       </Card>
-      <Card className="w-95 justify-center py-4">
+      <Card className="w-full justify-center py-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             Clientes Atendidos
@@ -58,7 +58,7 @@ export function Dashcards() {
         </CardContent>
         <CardFooter>1 Cliente</CardFooter>
       </Card>
-      <Card className="w-95 justify-center py-4">
+      <Card className="w-full justify-center py-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Receita Total</CardTitle>
           <CardDescription></CardDescription>
