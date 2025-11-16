@@ -38,8 +38,8 @@ npm run dev
 Credenciais padrão para testes:
 
 ```
-Email: admin@exemplo.com
-Senha: 123456
+Email: admin@super.com
+Senha: Adm1n@36579
 ```
 
 ---
@@ -64,6 +64,7 @@ npm start          # produção
 ```
 
 Ambiente padrão: `http://localhost:3000` (desenvolvimento e produção).
+- Copie `.env.example` para `.env` e ajuste `NEXTAUTH_URL`/`NEXTAUTH_SECRET` quando publicar.
 
 ---
 
@@ -77,6 +78,8 @@ npm run lint     # verificação ESLint
 npm install      # instala dependências
 npm ci           # instalação determinística (CI/CD)
 ```
+
+- `npx prisma db seed` — cria/atualiza o super admin padrão no banco.
 
 ---
 
@@ -106,6 +109,8 @@ Todas as dependências já estão configuradas e com tipagens incluídas.
 - Rode `npx prisma migrate dev` em desenvolvimento ou `npx prisma migrate deploy` no servidor após definir `DATABASE_URL`.
 - Sempre que atualizar o schema execute `npx prisma generate` para sincronizar o client.
 - Variável obrigatória: `DATABASE_URL=postgresql://usuario:senha@host:porta/banco`.
+  - Exemplo fornecido (EasyPanel): `postgres://postgres:obytXa0JehZjR616ogLRroVu9WG0XAe9ovh@postgres_rabbitmq_reservejabanco:5432/reserveja-postgres?sslmode=disable`
+- Execute `npx prisma db seed` para registrar o super admin padrão ou aplicar valores customizados via variáveis `SUPERADMIN_*`.
 
 ### Template EasyPanel
 
@@ -180,7 +185,7 @@ src/
 ## Testes e validação
 
 1. `npm run dev` e aguarde `Ready - started server on 0.0.0.0:3000`.
-2. Acesse `http://localhost:3000/login` e use `admin@exemplo.com` / `123456`.
+2. Acesse `http://localhost:3000/login` e use `admin@super.com` / `Adm1n@36579`.
 3. Confirme:
    - Sidebar oculta nas telas públicas.
    - Sidebar visível no dashboard e logout funcionando.
@@ -197,7 +202,7 @@ src/
 | Porta 3000 em uso | `npm run dev -- -p 3001` |
 | Avisos de hidratação | Garanta Node.js 18.20.0+ e reinstale dependências |
 | Erros Prisma/Postgres | Confirme `DATABASE_URL`, se o serviço está ativo no EasyPanel e execute `npx prisma migrate deploy` |
-| Login/Cadastro falha após importar backup | Reaplique `prisma/templates/easypanel-users.sql` e confirme que `passwordHash` foi gerado pelo utilitário scrypt |
+| Login/Cadastro falha após importar backup | Reaplique `prisma/templates/easypanel-users.sql`, rode `npx prisma db seed` e confirme que `passwordHash` foi gerado pelo utilitário scrypt |
 
 ---
 
