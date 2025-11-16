@@ -18,7 +18,7 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   const { isAuthenticated } = useAuth();
 
   // Rotas onde a sidebar deve ser ocultada
-  const hideSidebarRoutes = ['/login', '/cadastro'];
+  const hideSidebarRoutes = ['/', '/login', '/cadastro'];
   const shouldHideSidebar = hideSidebarRoutes.includes(pathname);
 
   // TODO: Futuramente, a lógica pode ser baseada em:

@@ -1,41 +1,65 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { verifyPassword } from "@/lib/password";
+
+type LoginPayload = {
+  email: string;
+  password: string;
+};
+
+const sanitizeUser = (user: {
+  id: string;
+  name: string;
+  email: string;
+  company: string;
+  phone: string;
+  plan: string;
+}) => ({
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  company: user.company,
+  phone: user.phone,
+  plan: user.plan,
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const { email, password } = (await request.json()) as LoginPayload;
 
-    // Validação básica
     if (!email || !password) {
       return NextResponse.json(
-        { message: 'Email e senha são obrigatórios' },
+        { message: "Email e senha são obrigatórios" },
         { status: 400 }
       );
     }
 
-    // Aqui você implementaria a lógica real de autenticação
-    // Por exemplo, verificar no banco de dados, validar senha, etc.
-    
-    // Simulação de autenticação
-    if (email === 'admin@exemplo.com' && password === '123456') {
-      return NextResponse.json({
-        success: true,
-        token: 'jwt-token-exemplo',
-        user: {
-          id: '1',
-          email: email,
-          name: 'Usuário Admin'
-        }
-      });
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { message: "Credenciais inválidas" },
+        { status: 401 }
+      );
     }
 
-    return NextResponse.json(
-      { message: 'Credenciais inválidas' },
-      { status: 401 }
-    );
+    if (!verifyPassword(password, user.passwordHash)) {
+      return NextResponse.json(
+        { message: "Credenciais inválidas" },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      user: sanitizeUser(user),
+    });
   } catch (error) {
-    console.error('Erro no login:', error);
+    console.error("Erro no login:", error);
     return NextResponse.json(
-      { message: 'Erro interno do servidor' },
+      { message: "Erro interno do servidor" },
       { status: 500 }
     );
   }

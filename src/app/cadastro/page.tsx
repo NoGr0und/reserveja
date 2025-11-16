@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function CadastroPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { register, isAuthenticated, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     nome: "",
@@ -29,6 +30,16 @@ export default function CadastroPage() {
       router.push('/dashboard');
     }
   }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    const selectedPlan = searchParams.get("plano");
+    if (selectedPlan) {
+      setFormData((prev) => ({
+        ...prev,
+        plano: selectedPlan,
+      }));
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -1,0 +1,16 @@
+-- Enable UUID generation (EasyPanel allows running extensions on database templates)
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE IF NOT EXISTS "User" (
+    "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL UNIQUE,
+    "company" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "plan" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS "User_email_idx" ON "User" ("email");
