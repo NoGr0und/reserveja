@@ -3,6 +3,7 @@ import { Dashcards } from "../components/lcard";
 import { Bdashcard } from "../components/bcard";
 import { Notificationbt } from "../components/notficationh";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import AddServiceButton from "../components/add_service_button";
 
 const Dashboard = () => {
   return (
@@ -16,7 +17,7 @@ const Dashboard = () => {
             <h1 className="text-muted-foreground">Bem-Vindo</h1>
           </div>
           <div>
-            <Button className="bg-blue-400 text-white">+ Novo Servico</Button>
+            <AddServiceButton />
           </div>
         </div>
       </header>

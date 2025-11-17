@@ -2,6 +2,7 @@ import { Notificationbt } from "@/app/components/notficationh";
 import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Cardser } from "@/app/components/cards";
+import AddServiceButton from "@/app/components/add_service_button";
 
 const services = () => {
   return (
@@ -17,7 +18,7 @@ const services = () => {
             </h1>
           </div>
           <div>
-            <Button className="bg-blue-400 text-white">+ Novo Servico</Button>
+            <AddServiceButton />
           </div>
         </div>
       </header>
