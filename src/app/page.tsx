@@ -128,7 +128,7 @@ export default function LandingPage() {
             </h2>
             <p className="text-slate-200">
               Todos incluem autenticação segura, dashboard completo e suporte
-              para importar seu template de banco no EasyPanel.
+              para importar seu template da empresa.
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
