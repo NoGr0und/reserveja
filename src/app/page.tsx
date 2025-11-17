@@ -60,29 +60,38 @@ export default function LandingPage() {
               Cadastrar
             </Link>
           </nav>
-          <Button asChild className="bg-white text-slate-900 hover:bg-slate-200">
+          <Button
+            asChild
+            className="bg-white text-slate-900 hover:bg-slate-200"
+          >
             <Link href="/login">Login</Link>
           </Button>
         </div>
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-24 px-6 py-16">
-        <section className="grid gap-10 md:grid-cols-[1.2fr_0.8fr]" id="historia">
+        <section
+          className="grid gap-10 md:grid-cols-[1.2fr_0.8fr]"
+          id="historia"
+        >
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-blue-300">
+            <p className="text-sm tracking-[0.3em] text-blue-300 uppercase">
               Plataforma de reservas
             </p>
-            <h1 className="mt-4 text-4xl font-bold leading-tight text-white sm:text-5xl">
-              Logo Reserve Ja
+            <h1 className="mt-4 text-4xl leading-tight font-bold text-white sm:text-5xl">
+              Reserve Ja
             </h1>
             <p className="mt-4 text-lg text-slate-200">
-              Nasceu em 2020 para ajudar empresas brasileiras a automatizar
+              Nasceu em 2025 para ajudar empresas brasileiras a automatizar
               atendimento e lotação de agendas com poucos cliques. Hoje somos
               parceiros de centenas de negócios que administram reservas,
               pagamentos e comunicação em um único painel.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Button asChild className="bg-blue-500 text-white hover:bg-blue-600">
+              <Button
+                asChild
+                className="bg-blue-500 text-white hover:bg-blue-600"
+              >
                 <Link href="#planos">Conhecer planos</Link>
               </Button>
               <Button
@@ -95,9 +104,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-100">
-            <h2 className="text-xl font-semibold text-white">
-              Nossa história
-            </h2>
+            <h2 className="text-xl font-semibold text-white">Nossa história</h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-200">
               A Reserveja LTDA começou como uma equipe de especialistas em
               hospitalidade. Identificamos que agendamentos eram feitos em
@@ -106,15 +113,14 @@ export default function LandingPage() {
               painel completo que você vê hoje.
             </p>
             <p className="mt-4 text-sm text-blue-200">
-              Estamos prontos para hospedar seu negócio no EasyPanel e escalar
-              com segurança.
+              Estamos prontos para o seu negócio escalar com segurança.
             </p>
           </div>
         </section>
 
         <section id="planos" className="space-y-8">
           <div className="flex flex-col gap-4 text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-blue-300">
+            <p className="text-sm tracking-[0.3em] text-blue-300 uppercase">
               Planos
             </p>
             <h2 className="text-3xl font-bold text-white">
@@ -132,7 +138,7 @@ export default function LandingPage() {
                 className="flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-blue-500/5"
               >
                 <div>
-                  <p className="text-sm uppercase tracking-[0.2em] text-blue-300">
+                  <p className="text-sm tracking-[0.2em] text-blue-300 uppercase">
                     {plan.name}
                   </p>
                   <p className="mt-2 text-3xl font-semibold text-white">
@@ -168,7 +174,7 @@ export default function LandingPage() {
           className="grid gap-8 rounded-3xl border border-white/10 bg-slate-950/70 p-10 md:grid-cols-2"
         >
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-blue-300">
+            <p className="text-sm tracking-[0.3em] text-blue-300 uppercase">
               Contato
             </p>
             <h2 className="mt-4 text-3xl font-bold text-white">
@@ -182,7 +188,8 @@ export default function LandingPage() {
               >
                 contato@reserveja.com.br
               </a>{" "}
-              ou fale no WhatsApp (11) 99999-9999. Respondemos em até um dia útil.
+              ou fale no WhatsApp (81) 99329-3134. Respondemos em até um dia
+              útil.
             </p>
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-slate-300">
               <div>
@@ -191,12 +198,14 @@ export default function LandingPage() {
               </div>
               <div>
                 <p className="font-semibold text-white">Endereço</p>
-                <p>Av. Paulista, 1000 - São Paulo/SP</p>
+                <p>
+                  Edf: Zélia Mota 200, Mauricio de Nassau , 301 - Caruaru/PE
+                </p>
               </div>
             </div>
           </div>
           <div className="rounded-2xl bg-slate-900/60 p-6">
-            <p className="text-sm uppercase tracking-[0.3em] text-blue-300">
+            <p className="text-sm tracking-[0.3em] text-blue-300 uppercase">
               Atualizações
             </p>
             <h3 className="mt-3 text-2xl font-semibold text-white">
@@ -224,7 +233,9 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-lg font-semibold">
-              <span className="rounded bg-blue-500/20 p-1 text-blue-300">▸</span>
+              <span className="rounded bg-blue-500/20 p-1 text-blue-300">
+                ▸
+              </span>
               Reserve Ja
             </div>
             <p className="text-sm text-slate-300">
@@ -258,7 +269,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="max-w-sm">
-            <p className="text-sm uppercase tracking-[0.3em] text-blue-300">
+            <p className="text-sm tracking-[0.3em] text-blue-300 uppercase">
               Newsletter
             </p>
             <p className="mt-2 text-sm text-slate-200">
