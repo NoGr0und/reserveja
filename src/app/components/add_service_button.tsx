@@ -52,6 +52,34 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const formatTimeValue = (date?: Date) => {
+  if (!date) {
+    return "";
+  }
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${hours}:${minutes}`;
+};
+
+const updateDateWithTime = (timeValue: string, currentDate?: Date) => {
+  if (!timeValue) {
+    return currentDate ?? new Date();
+  }
+
+  const [hours, minutes] = timeValue.split(":").map(Number);
+
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+    return currentDate ?? new Date();
+  }
+
+  const nextDate = new Date(currentDate ?? new Date());
+  nextDate.setHours(hours, minutes, 0, 0);
+
+  return nextDate;
+};
+
 const AddServiceButton = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -146,15 +174,24 @@ const AddServiceButton = () => {
 
             <FormField
               control={form.control}
-              name="date"
+              name="time"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tempo</FormLabel>
-                  <Input
-                    type="time"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <FormControl>
+                    <Input
+                      type="time"
+                      value={formatTimeValue(field.value)}
+                      onChange={(event) =>
+                        field.onChange(
+                          updateDateWithTime(event.target.value, field.value)
+                        )
+                      }
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
