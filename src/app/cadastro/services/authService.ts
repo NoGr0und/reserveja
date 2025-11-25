@@ -38,15 +38,18 @@ export const registerService = async (data: RegisterData): Promise<RegisterRespo
       }),
     });
 
+    const contentType = response.headers.get('content-type');
+    const maybeJson = contentType?.includes('application/json');
+
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = maybeJson ? await response.json() : null;
       return {
         success: false,
-        message: errorData.message || 'Erro ao realizar cadastro'
+        message: errorData?.message || `Erro ao realizar cadastro (status ${response.status})`
       };
     }
 
-    const result = await response.json();
+    const result = maybeJson ? await response.json() : {};
     
     return {
       success: true,

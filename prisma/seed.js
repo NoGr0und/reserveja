@@ -11,11 +11,16 @@ function hashPassword(password) {
 }
 
 async function main() {
+  if (!process.env.DATABASE_URL) {
+    console.error("DATABASE_URL nao definida. Configure o .env antes de rodar o seed.");
+    process.exit(1);
+  }
+
   const email = process.env.SUPERADMIN_EMAIL || "admin@super.com";
   const password = process.env.SUPERADMIN_PASSWORD || "Adm1n@36579";
   const name = process.env.SUPERADMIN_NAME || "Super Admin";
   const company =
-    process.env.SUPERADMIN_COMPANY || "Reserveja LTDA - Administração";
+    process.env.SUPERADMIN_COMPANY || "Reserveja LTDA - Administracao";
   const phone = process.env.SUPERADMIN_PHONE || "(11) 90000-0000";
   const plan = process.env.SUPERADMIN_PLAN || "empresarial";
 
@@ -40,7 +45,7 @@ async function main() {
     },
   });
 
-  console.log(`Super admin disponível em ${email}`);
+  console.log(`Super admin disponivel em ${email}`);
 }
 
 main()

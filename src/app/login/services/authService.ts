@@ -21,15 +21,18 @@ export const loginService = async (email: string, password: string): Promise<Log
       body: JSON.stringify({ email, password }),
     });
 
+    const contentType = response.headers.get('content-type');
+    const maybeJson = contentType?.includes('application/json');
+
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = maybeJson ? await response.json() : null;
       return {
         success: false,
-        message: errorData.message || 'Erro ao fazer login'
+        message: errorData?.message || `Erro ao fazer login (status ${response.status})`
       };
     }
 
-    const data = await response.json();
+    const data = maybeJson ? await response.json() : {};
     
     // Salvar token no localStorage
     if (data.token) {
