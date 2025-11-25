@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const plans = [
   {
@@ -43,8 +44,12 @@ export default function LandingPage() {
             href="/"
             className="flex items-center gap-2 text-xl font-semibold tracking-tight"
           >
-            <span className="rounded bg-blue-500/20 p-1 text-blue-300">▸</span>
-            Reserve Ja
+            <BrandLogo
+              priority
+              size={40}
+              className="text-xl font-semibold tracking-tight"
+              textClassName="text-white"
+            />
           </Link>
           <nav className="hidden gap-8 text-sm font-medium text-slate-200 md:flex">
             <a href="#planos" className="transition hover:text-white">
@@ -232,12 +237,11 @@ export default function LandingPage() {
       <footer className="border-t border-white/10 bg-black/70">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-lg font-semibold">
-              <span className="rounded bg-blue-500/20 p-1 text-blue-300">
-                ▸
-              </span>
-              Reserve Ja
-            </div>
+            <BrandLogo
+              size={34}
+              className="text-lg font-semibold"
+              textClassName="text-white"
+            />
             <p className="text-sm text-slate-300">
               Sistema de reservas completo para seu negócio.
             </p>
