@@ -14,9 +14,9 @@ export function BrandLogo({
   withText = true,
   className,
   textClassName,
-  size = 36,
+  size = 100, 
   priority = false,
-  imageSrc = "/reserveja.svg",
+  imageSrc = "/favicon.ico",
 }: BrandLogoProps) {
   return (
     <div className={cn("flex items-center gap-2", className)}>

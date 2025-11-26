@@ -189,13 +189,23 @@ export default function LandingPage() {
               Envie um email para{" "}
               <a
                 className="font-semibold text-blue-300"
-                href="mailto:contato@reserveja.com.br"
+                href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=rerserveja@gmail.com&su=Contato%20via%20Landing%20Page"
+    target="_blank" // Abrir em uma nova aba
+    rel="noopener noreferrer" // Prática de segurança para links externos
               >
-                contato@reserveja.com.br
+                rerserveja@gmail.com
               </a>{" "}
-              ou fale no WhatsApp (81) 99329-3134. Respondemos em até um dia
-              útil.
-            </p>
+              ou fale no WhatsApp{" "}
+  <a
+    className="font-semibold text-blue-300 whitespace-nowrap" // whitespace-nowrap evita quebra de linha no número
+    href="https://wa.me/5581993293134?text=Olá%20Reserve%20Ja!%20Gostaria%20de%20falar%20sobre%20os%20planos."
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    (81) 99329-3134
+  </a>
+  . Respondemos em até um dia útil.
+</p>
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-slate-300">
               <div>
                 <p className="font-semibold text-white">Horários</p>
@@ -204,7 +214,13 @@ export default function LandingPage() {
               <div>
                 <p className="font-semibold text-white">Endereço</p>
                 <p>
-                  Edf: Zélia Mota 200, Mauricio de Nassau , 301 - Caruaru/PE
+                  AV. Agamenon Mangalhães n.° 1143, 4° andar, Sala 401
+                </p>
+                <p>
+                  Maurício de Nassau Caruaru-Pe
+                </p>
+                <p>
+                  55014-00
                 </p>
               </div>
             </div>
