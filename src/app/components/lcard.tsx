@@ -9,7 +9,20 @@ import {
 } from "@/components/ui/card";
 import { Calendar, CircleDollarSign, Clock, Users } from "lucide-react";
 
-export function Dashcards() {
+export type DashboardMetrics = {
+  appointmentsToday: number;
+  pendingToday: number;
+  totalServices: number;
+  activeServices: number;
+  customersAttended: number;
+  revenueTotal: number;
+};
+
+type DashcardsProps = {
+  metrics: DashboardMetrics;
+};
+
+export function Dashcards({ metrics }: DashcardsProps) {
   return (
     <div className="grid items-center gap-4 p-4 sm:grid-cols-1 sm:p-6 md:grid-cols-2 lg:grid-cols-4">
       {" "}
@@ -24,9 +37,9 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold">0</p>
+          <p className="text-3xl font-bold">{metrics.appointmentsToday}</p>
         </CardContent>
-        <CardFooter>0 Pendencias</CardFooter>
+        <CardFooter>{metrics.pendingToday} Pendencias</CardFooter>
       </Card>
       <Card className="w-full justify-center py-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -39,9 +52,9 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold">2</p>
+          <p className="text-3xl font-bold">{metrics.totalServices}</p>
         </CardContent>
-        <CardFooter>2 Ativos</CardFooter>
+        <CardFooter>{metrics.activeServices} Ativos</CardFooter>
       </Card>
       <Card className="w-full justify-center py-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -54,9 +67,9 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold">1</p>
+          <p className="text-3xl font-bold">{metrics.customersAttended}</p>
         </CardContent>
-        <CardFooter>1 Cliente</CardFooter>
+        <CardFooter>{metrics.customersAttended} Cliente(s)</CardFooter>
       </Card>
       <Card className="w-full justify-center py-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -67,7 +80,13 @@ export function Dashcards() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-green-700">R$ 0,00</p>
+          <p className="text-3xl font-bold text-green-700">
+            {new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+              minimumFractionDigits: 2,
+            }).format(metrics.revenueTotal)}
+          </p>
         </CardContent>
         <CardFooter>Servicos Comcluidos</CardFooter>
       </Card>

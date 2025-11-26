@@ -48,6 +48,7 @@ model Service {
   time      DateTime
   type      ServiceType
   userId    String
+  durationMinutes Int     @default(60)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 

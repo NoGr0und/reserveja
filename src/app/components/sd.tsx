@@ -79,7 +79,8 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel className="p-4 text-center">
             <BrandLogo
-              size={36}
+              size={28}
+              imageSrc="/file.svg"
               className="justify-center text-2xl font-bold"
               textClassName="text-white"
             />

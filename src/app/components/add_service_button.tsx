@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { serviceTypeOptions } from "../_constants/services";
 import type { ServiceCard } from "./cards";
+import { useAuth } from "@/contexts/AuthContext";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
@@ -76,7 +77,9 @@ const normalizeDuration = (value: number, unit: "hours" | "minutes") =>
   unit === "hours" ? value * 60 : value;
 
 const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -89,7 +92,12 @@ const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
+    if (!user?.id) {
+      return;
+    }
+
+    setIsSaving(true);
     const newService: ServiceCard = {
       id: globalThis.crypto?.randomUUID
         ? globalThis.crypto.randomUUID()
@@ -101,9 +109,36 @@ const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
       status: data.type,
     };
 
-    onAdd?.(newService);
-    form.reset();
-    setIsOpen(false);
+    try {
+      const response = await fetch("/api/services", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          name: newService.name,
+          description: newService.description,
+          price: newService.price,
+          type: newService.status,
+          durationMinutes: newService.durationMinutes,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Falha ao salvar serviço.");
+      }
+
+      const payload = await response.json();
+      onAdd?.({
+        ...newService,
+        id: payload.service?.id ?? newService.id,
+      });
+      form.reset();
+      setIsOpen(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -268,8 +303,12 @@ const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit" className="bg-green-500 hover:bg-green-600">
-                Adicionar
+              <Button
+                type="submit"
+                className="bg-green-500 hover:bg-green-600"
+                disabled={isSaving}
+              >
+                {isSaving ? "Salvando..." : "Adicionar"}
               </Button>
             </DialogFooter>
           </form>

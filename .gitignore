@@ -42,3 +42,9 @@ next-env.d.ts
 
 /app/generated/prisma
 
+.AJUSTES.md
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+

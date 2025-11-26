@@ -7,6 +7,7 @@ type BrandLogoProps = {
   textClassName?: string;
   size?: number;
   priority?: boolean;
+  imageSrc?: string;
 };
 
 export function BrandLogo({
@@ -15,11 +16,12 @@ export function BrandLogo({
   textClassName,
   size = 36,
   priority = false,
+  imageSrc = "/reserveja.svg",
 }: BrandLogoProps) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Image
-        src="/reserveja.svg"
+        src={imageSrc}
         alt="Reserveja"
         width={size}
         height={size}
