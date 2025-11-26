@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,77 +35,89 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { serviceTypeOptions } from "../_constants/services";
+import type { ServiceCard } from "./cards";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
     message: "o Nome e Obrigatorio!",
   }),
-  price: z.string().trim().min(1, {
-    message: "o Valor e Obrigatorio!",
+  description: z.string().trim().min(1, {
+    message: "a Descrição e Obrigatoria!",
   }),
+  price: z.coerce
+    .number({
+      invalid_type_error: "Informe um número válido",
+      required_error: "O valor é obrigatório",
+    })
+    .int("Insira apenas valores inteiros")
+    .nonnegative("O valor precisa ser positivo"),
   type: z.nativeEnum(ServiceType, {
     required_error: "o Tipo e Obrigatorio!",
   }),
-  time: z.date({
-    required_error: "a Tempo e Obrigatorio!",
+  durationValue: z.coerce
+    .number({
+      invalid_type_error: "Informe um número válido",
+      required_error: "O tempo é obrigatório",
+    })
+    .int("Use apenas números inteiros")
+    .positive("O tempo precisa ser maior que zero"),
+  durationUnit: z.enum(["hours", "minutes"], {
+    required_error: "Informe se o tempo é em horas ou minutos",
   }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-const formatTimeValue = (date?: Date) => {
-  if (!date) {
-    return "";
-  }
-
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${hours}:${minutes}`;
+type AddServiceButtonProps = {
+  onAdd?: (service: ServiceCard) => void;
 };
 
-const updateDateWithTime = (timeValue: string, currentDate?: Date) => {
-  if (!timeValue) {
-    return currentDate ?? new Date();
-  }
+const normalizeDuration = (value: number, unit: "hours" | "minutes") =>
+  unit === "hours" ? value * 60 : value;
 
-  const [hours, minutes] = timeValue.split(":").map(Number);
-
-  if (Number.isNaN(hours) || Number.isNaN(minutes)) {
-    return currentDate ?? new Date();
-  }
-
-  const nextDate = new Date(currentDate ?? new Date());
-  nextDate.setHours(hours, minutes, 0, 0);
-
-  return nextDate;
-};
-
-const AddServiceButton = () => {
+const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      price: "",
+      description: "",
+      price: 0,
       type: ServiceType.ACTIVE,
-      time: new Date(),
+      durationValue: 0,
+      durationUnit: "hours",
     },
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log(data);
+    const newService: ServiceCard = {
+      id: globalThis.crypto?.randomUUID
+        ? globalThis.crypto.randomUUID()
+        : `service-${Date.now()}`,
+      name: data.name,
+      description: data.description,
+      durationMinutes: normalizeDuration(data.durationValue, data.durationUnit),
+      price: data.price,
+      status: data.type,
+    };
+
+    onAdd?.(newService);
+    form.reset();
+    setIsOpen(false);
   };
 
   return (
     <Dialog
+      open={isOpen}
       onOpenChange={(open) => {
+        setIsOpen(open);
         if (!open) {
           form.reset();
         }
       }}
     >
       <DialogTrigger asChild>
-        <Button className="rounded-full font-bold">
+        <Button className="rounded-full bg-blue-500 font-bold text-white">
           Adicionar Servico <ArrowDownUpIcon className="ml-2" />
         </Button>
       </DialogTrigger>
@@ -132,12 +145,38 @@ const AddServiceButton = () => {
             />
             <FormField
               control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descrição</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Descreva o serviço..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="price"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite o Valor..." {...field} />
+                    <Input
+                      type="number"
+                      min={0}
+                      step={1}
+                      placeholder="Digite o Valor..."
+                      value={field.value === 0 ? "" : field.value || ""}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        field.onChange(value === "" ? 0 : Number(value));
+                      }}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -150,10 +189,7 @@ const AddServiceButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecione o Tipo da Transacao..." />
@@ -172,30 +208,59 @@ const AddServiceButton = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="time"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tempo</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="time"
-                      value={formatTimeValue(field.value)}
-                      onChange={(event) =>
-                        field.onChange(
-                          updateDateWithTime(event.target.value, field.value)
-                        )
-                      }
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-2">
+              <FormLabel>Tempo</FormLabel>
+              <div className="flex gap-2">
+                <FormField
+                  control={form.control}
+                  name="durationValue"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          step={1}
+                          placeholder="Tempo"
+                          value={field.value === 0 ? "" : field.value || ""}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            field.onChange(value === "" ? 0 : Number(value));
+                          }}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="durationUnit"
+                  render={({ field }) => (
+                    <FormItem className="w-32">
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Unidade" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hours">Horas</SelectItem>
+                            <SelectItem value="minutes">Minutos</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
 
             <DialogFooter>
               <DialogClose asChild>

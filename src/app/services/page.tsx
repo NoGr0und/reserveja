@@ -1,10 +1,19 @@
-import { Notificationbt } from "@/app/components/notficationh";
-import { Button } from "@/components/ui/button";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { Cardser } from "@/app/components/cards";
-import AddServiceButton from "@/app/components/add_service_button";
+"use client";
 
-const services = () => {
+import { useState } from "react";
+import { Notificationbt } from "@/app/components/notficationh";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Cardser, type ServiceCard } from "@/app/components/cards";
+import AddServiceButton from "@/app/components/add_service_button";
+const initialServices: ServiceCard[] = [];
+
+const ServicesPage = () => {
+  const [services, setServices] = useState<ServiceCard[]>(initialServices);
+
+  const handleAddService = (service: ServiceCard) => {
+    setServices((prev) => [service, ...prev]);
+  };
+
   return (
     <ProtectedRoute>
       <header>
@@ -18,15 +27,15 @@ const services = () => {
             </h1>
           </div>
           <div>
-            <AddServiceButton />
+            <AddServiceButton onAdd={handleAddService} />
           </div>
         </div>
       </header>
       <div>
-        <Cardser />
+        <Cardser services={services} />
       </div>
     </ProtectedRoute>
   );
 };
 
-export default services;
+export default ServicesPage;

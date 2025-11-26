@@ -26,6 +26,15 @@ model User {
   services     Service[]
 }
 
+model Custumer {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  phone        String
+
+  @@map("client")
+}
+
 model Service {
   id        String      @id @default(uuid())
   name      String

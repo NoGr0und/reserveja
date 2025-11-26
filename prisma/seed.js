@@ -1,5 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-const { randomBytes, scryptSync } = require("node:crypto");
+import { PrismaClient } from "@prisma/client";
+import { randomBytes, scryptSync } from "node:crypto";
 
 const prisma = new PrismaClient();
 const KEY_LENGTH = 64;
@@ -12,7 +12,9 @@ function hashPassword(password) {
 
 async function main() {
   if (!process.env.DATABASE_URL) {
-    console.error("DATABASE_URL nao definida. Configure o .env antes de rodar o seed.");
+    console.error(
+      "DATABASE_URL nao definida. Configure o .env antes de rodar o seed.",
+    );
     process.exit(1);
   }
 

@@ -40,17 +40,17 @@ const ItemsSidebar = [
   },
   {
     title: "Servicos",
-    url: "/dashboard/services",
+    url: "/services",
     icon: Clock,
   },
   {
     title: "Agendamentos",
-    url: "#",
+    url: "/appointments",
     icon: Calendar,
   },
   {
     title: "Clientes",
-    url: "#",
+    url: "/customers",
     icon: Users,
   },
   {
@@ -110,7 +110,7 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> {user?.name || 'Usuário'}
+                  <User2 /> {user?.name || "Usuário"}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
