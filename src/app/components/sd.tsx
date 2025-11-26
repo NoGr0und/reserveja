@@ -24,13 +24,13 @@ import {
   Clock,
   Home,
   LogOut,
-  MousePointer2,
   Settings,
   User2,
   Users,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const ItemsSidebar = [
   {
@@ -77,11 +77,12 @@ export function AppSidebar() {
     <Sidebar side="left">
       <SidebarHeader>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-primary p-4 text-center text-3xl font-bold">
-            <div className="flex items-center justify-center gap-2">
-              <MousePointer2 className="text-blue-600" />
-              <span>Reserve Ja</span>
-            </div>
+          <SidebarGroupLabel className="p-4 text-center">
+            <BrandLogo
+              size={36}
+              className="justify-center text-2xl font-bold"
+              textClassName="text-white"
+            />
           </SidebarGroupLabel>
         </SidebarGroup>
       </SidebarHeader>
