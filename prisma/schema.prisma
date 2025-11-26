@@ -24,6 +24,8 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   services     Service[]
+  customers    Custumer[]
+  appointments Appointment[]
 }
 
 model Custumer {
@@ -31,6 +33,9 @@ model Custumer {
   name         String
   email        String    @unique
   phone        String
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
 
   @@map("client")
 }
@@ -47,6 +52,22 @@ model Service {
   updatedAt DateTime    @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+}
+
+model Appointment {
+  id           String    @id @default(uuid())
+  customerId   String
+  serviceId    String
+  userId       String
+  requestedAt  DateTime  @default(now())
+  scheduledFor DateTime
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  customer Custumer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  service  Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum ServiceType {
