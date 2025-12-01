@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -70,13 +70,26 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 type AddServiceButtonProps = {
-  onAdd?: (service: ServiceCard) => void;
+  serviceToEdit?: ServiceCard | null;
+  onSave?: (service: ServiceCard) => void;
+  onOpenChange?: (isOpen: boolean) => void;
 };
 
 const normalizeDuration = (value: number, unit: "hours" | "minutes") =>
   unit === "hours" ? value * 60 : value;
 
-const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
+const getDurationParts = (durationMinutes: number) => {
+  if (durationMinutes > 0 && durationMinutes % 60 === 0) {
+    return { value: durationMinutes / 60, unit: "hours" };
+  }
+  return { value: durationMinutes, unit: "minutes" };
+};
+
+const AddServiceButton = ({
+  serviceToEdit,
+  onSave,
+  onOpenChange,
+}: AddServiceButtonProps) => {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -92,48 +105,85 @@ const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
     },
   });
 
+  const isEditing = !!serviceToEdit;
+
+  useEffect(() => {
+    if (serviceToEdit) {
+      const duration = getDurationParts(serviceToEdit.durationMinutes);
+      form.reset({
+        name: serviceToEdit.name,
+        description: serviceToEdit.description || "",
+        price: serviceToEdit.price,
+        type: serviceToEdit.type,
+        durationValue: duration.value,
+        durationUnit: duration.unit as "hours" | "minutes",
+      });
+      setIsOpen(true);
+    } else {
+      form.reset();
+    }
+  }, [serviceToEdit, form]);
+
   const onSubmit = async (data: FormValues) => {
     if (!user?.id) {
       return;
     }
 
     setIsSaving(true);
-    const newService: ServiceCard = {
-      id: globalThis.crypto?.randomUUID
-        ? globalThis.crypto.randomUUID()
-        : `service-${Date.now()}`,
+
+    const serviceData = {
+      userId: user.id,
       name: data.name,
       description: data.description,
-      durationMinutes: normalizeDuration(data.durationValue, data.durationUnit),
       price: data.price,
-      status: data.type,
+      type: data.type,
+      durationMinutes: normalizeDuration(data.durationValue, data.durationUnit),
     };
 
     try {
-      const response = await fetch("/api/services", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          name: newService.name,
-          description: newService.description,
-          price: newService.price,
-          type: newService.status,
-          durationMinutes: newService.durationMinutes,
-        }),
-      });
+      let response;
+      let savedService: ServiceCard;
 
-      if (!response.ok) {
-        throw new Error("Falha ao salvar serviço.");
+      if (isEditing) {
+        response = await fetch("/api/services", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...serviceData, id: serviceToEdit.id }),
+        });
+        const payload = await response.json();
+        savedService = {
+          ...serviceToEdit,
+          ...serviceData,
+          type: serviceData.type,
+          id: payload.service?.id ?? serviceToEdit.id,
+        };
+      } else {
+        response = await fetch("/api/services", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(serviceData),
+        });
+        const payload = await response.json();
+        savedService = {
+          ...serviceData,
+          type: serviceData.type,
+          id:
+            payload.service?.id ??
+            (globalThis.crypto?.randomUUID
+              ? globalThis.crypto.randomUUID()
+              : `service-${Date.now()}`),
+        };
       }
 
-      const payload = await response.json();
-      onAdd?.({
-        ...newService,
-        id: payload.service?.id ?? newService.id,
-      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Falha ao salvar serviço.");
+      }
+
+      onSave?.(savedService);
       form.reset();
       setIsOpen(false);
+      onOpenChange?.(false); // Notifica o pai que o modal fechou
     } catch (error) {
       console.error(error);
     } finally {
@@ -146,7 +196,9 @@ const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
       open={isOpen}
       onOpenChange={(open) => {
         setIsOpen(open);
+        onOpenChange?.(open);
         if (!open) {
+          // Reseta o formulário se o modal for fechado sem salvar
           form.reset();
         }
       }}
@@ -158,8 +210,10 @@ const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Adicionar Servico</DialogTitle>
-          <DialogDescription>Insira as informacoes abaixo</DialogDescription>
+          <DialogTitle>
+            {isEditing ? "Editar Serviço" : "Adicionar Serviço"}
+          </DialogTitle>
+          <DialogDescription>Insira as informações abaixo</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -308,7 +362,11 @@ const AddServiceButton = ({ onAdd }: AddServiceButtonProps) => {
                 className="bg-green-500 hover:bg-green-600"
                 disabled={isSaving}
               >
-                {isSaving ? "Salvando..." : "Adicionar"}
+                {isSaving
+                  ? "Salvando..."
+                  : isEditing
+                    ? "Salvar Alterações"
+                    : "Adicionar"}
               </Button>
             </DialogFooter>
           </form>
