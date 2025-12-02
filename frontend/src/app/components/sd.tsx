@@ -31,6 +31,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
 import { BrandLogo } from "@/components/BrandLogo";
+import { usePathname } from "next/navigation";
 
 const ItemsSidebar = [
   {
@@ -64,6 +65,7 @@ export default ItemsSidebar;
 
 export function AppSidebar() {
   const { user, logout } = useAuth();
+  const pathname = usePathname();
 
   const handleLogout = () => {
     // TODO: Futuramente, aqui pode ser adicionada lógica para:
@@ -74,14 +76,16 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar side="left">
+    <Sidebar
+      side="left"
+      className="border-r border-[#1c1f2a] bg-[#0f1116] text-white"
+    >
       <SidebarHeader>
         <SidebarGroup>
-          <SidebarGroupLabel className="p-4 text-center">
+          <SidebarGroupLabel className="px-5 py-4">
             <BrandLogo
-              size={28}
-              imageSrc="/file.svg"
-              className="justify-center text-2xl font-bold"
+              size={32}
+              className="justify-start text-xl font-semibold tracking-tight"
               textClassName="text-white"
             />
           </SidebarGroupLabel>
@@ -91,11 +95,15 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="flex flex-col gap-4">
+            <SidebarMenu className="flex flex-col gap-2 px-2 py-4">
               {ItemsSidebar.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton
+                    asChild
+                    className="hover:bg-[#1a1f2c] hover:text-white data-[active=true]:bg-[#1f2635] data-[active=true]:text-white"
+                    data-active={pathname === item.url}
+                  >
+                    <a href={item.url} className="flex items-center gap-3">
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
@@ -111,7 +119,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
+                <SidebarMenuButton className="hover:bg-[#1a1f2c] hover:text-white">
                   <User2 /> {user?.name || "Usuário"}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>

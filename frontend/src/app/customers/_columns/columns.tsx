@@ -1,17 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Custumer } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { Trash } from "lucide-react";
+import { Trash, Pencil } from "lucide-react";
+
+export type CustomerRow = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: "ACTIVE" | "INACTIVE";
+  company: string;
+};
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const CustomerColumns: ColumnDef<Custumer>[] = [
+export const CustomerColumns: ColumnDef<CustomerRow>[] = [
   {
     accessorKey: "name",
-    header: "Nome Do Cliente",
+    header: "Nome do Cliente",
   },
   {
     accessorKey: "email",
@@ -19,15 +27,50 @@ export const CustomerColumns: ColumnDef<Custumer>[] = [
   },
   {
     accessorKey: "phone",
-    header: "Numero",
+    header: "Número",
+  },
+  {
+    accessorKey: "company",
+    header: "Empresa",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const value = row.getValue("status") as string;
+      const isActive = value === "ACTIVE";
+      return (
+        <span className={isActive ? "text-green-600" : "text-red-500"}>
+          {isActive ? "Ativo" : "Inativo"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "actions",
     header: "",
-    cell: () => {
+    cell: ({ row, table }) => {
+      const customer = row.original;
+      const meta = table.options.meta as
+        | { onEdit?: (customer: CustomerRow) => void; onDelete?: (id: string) => void }
+        | undefined;
+
       return (
-        <div className="">
-          <Button variant="ghost" size="icon" className="text-muted-foreground">
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground"
+            onClick={() => meta?.onEdit?.(customer)}
+          >
+            <Pencil />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground"
+            onClick={() => meta?.onDelete?.(customer.id)}
+          >
             <Trash />
           </Button>
         </div>

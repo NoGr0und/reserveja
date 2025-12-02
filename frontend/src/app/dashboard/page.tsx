@@ -55,6 +55,20 @@ const Dashboard = () => {
         setMetrics(payload.metrics);
         setUpcomingAppointments(payload.upcomingAppointments ?? []);
         setServices(payload.services ?? []);
+
+        // Garantir que a lista de serviços está atualizada (fallback na rota dedicada)
+        const servicesResp = await fetch(
+          `/api/services?userId=${user.id}`,
+          {
+            method: "GET",
+            cache: "no-store",
+            signal: controller.signal,
+          },
+        );
+        if (servicesResp.ok) {
+          const servicesJson = await servicesResp.json();
+          setServices(servicesJson.services ?? payload.services ?? []);
+        }
       } catch (error) {
         console.error("Erro ao carregar dashboard:", error);
       } finally {

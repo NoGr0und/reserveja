@@ -1,12 +1,12 @@
-import { ServiceType } from "@prisma/client";
+export type ServiceStatus = "ACTIVE" | "INACTIVE";
 
 export const serviceTypeOptions = [
   {
     label: "Ativo",
-    value: ServiceType.ACTIVE,
+    value: "ACTIVE" as ServiceStatus,
   },
   {
     label: "Inativo",
-    value: ServiceType.INACTIVE,
+    value: "INACTIVE" as ServiceStatus,
   },
 ];

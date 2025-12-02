@@ -33,6 +33,7 @@ model Custumer {
   name         String
   email        String    @unique
   phone        String
+  status       CustomerStatus @default(ACTIVE)
   userId       String?
   user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
@@ -72,6 +73,11 @@ model Appointment {
 }
 
 enum ServiceType {
+  ACTIVE
+  INACTIVE
+}
+
+enum CustomerStatus {
   ACTIVE
   INACTIVE
 }

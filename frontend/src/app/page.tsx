@@ -38,6 +38,26 @@ const plans = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-black text-white">
+      <div className="fixed bottom-4 left-1/2 z-30 w-[min(1100px,calc(100%-2rem))] -translate-x-1/2 rounded-2xl border border-blue-500/30 bg-slate-900/90 px-4 py-3 text-sm text-slate-100 shadow-lg shadow-blue-500/10 backdrop-blur">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <span className="md:max-w-[70%]">
+            Usamos cookies para melhorar sua experiência. Aceita cookies necessários e analíticos?
+          </span>
+          <div className="flex gap-2">
+            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white" type="button">
+              Aceitar todos
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10"
+              type="button"
+            >
+              Somente necessários
+            </Button>
+          </div>
+        </div>
+      </div>
       <header className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link

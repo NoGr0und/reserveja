@@ -9,8 +9,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { ServiceType } from "@prisma/client";
 import { Clock, DollarSign, Pencil, Trash } from "lucide-react";
+import type { ServiceStatus } from "@/app/_constants/services";
 
 export type ServiceCard = {
   id: string;
@@ -18,7 +18,7 @@ export type ServiceCard = {
   description?: string;
   durationMinutes: number;
   price: number;
-  type: ServiceType;
+  type: ServiceStatus;
 };
 
 type CardserProps = {
@@ -46,8 +46,8 @@ const formatCurrency = (value: number) =>
     minimumFractionDigits: 2,
   }).format(value);
 
-const getStatusInfo = (status: ServiceType) => {
-  const isActive = status === ServiceType.ACTIVE;
+const getStatusInfo = (status: ServiceStatus) => {
+  const isActive = status === "ACTIVE";
   return {
     label: isActive ? "Ativo" : "Inativo",
     className: isActive ? "bg-green-500 text-white" : "bg-red-400 text-white",

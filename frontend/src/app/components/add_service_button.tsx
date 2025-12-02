@@ -17,7 +17,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ServiceType } from "@prisma/client";
+import type { ServiceStatus } from "../_constants/services";
 import {
   Form,
   FormControl,
@@ -52,7 +52,7 @@ const formSchema = z.object({
     })
     .int("Insira apenas valores inteiros")
     .nonnegative("O valor precisa ser positivo"),
-  type: z.nativeEnum(ServiceType, {
+  type: z.enum(["ACTIVE", "INACTIVE"], {
     required_error: "o Tipo e Obrigatorio!",
   }),
   durationValue: z.coerce
@@ -99,7 +99,7 @@ const AddServiceButton = ({
       name: "",
       description: "",
       price: 0,
-      type: ServiceType.ACTIVE,
+      type: "ACTIVE",
       durationValue: 0,
       durationUnit: "hours",
     },
@@ -114,7 +114,7 @@ const AddServiceButton = ({
         name: serviceToEdit.name,
         description: serviceToEdit.description || "",
         price: serviceToEdit.price,
-        type: serviceToEdit.type,
+        type: serviceToEdit.type as ServiceStatus,
         durationValue: duration.value,
         durationUnit: duration.unit as "hours" | "minutes",
       });
@@ -136,7 +136,7 @@ const AddServiceButton = ({
       name: data.name,
       description: data.description,
       price: data.price,
-      type: data.type,
+      type: data.type as ServiceStatus,
       durationMinutes: normalizeDuration(data.durationValue, data.durationUnit),
     };
 
