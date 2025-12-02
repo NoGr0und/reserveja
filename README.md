@@ -22,24 +22,30 @@ Projeto [Next.js](https://nextjs.org) com autenticação completa, layout condic
 - Aplicação de reservas com dashboard privado, páginas de login/cadastro e sidebar condicional.
 - Contexto global controla autenticação, persistência e feedback visual de carregamento.
 - Rotas `/api/auth/login` e `/api/auth/register` conectadas ao Postgres via Prisma e hash scrypt.
-- Layout baseado em App Router (`src/app`) com componentes reutilizáveis (Radix, Tailwind, shadcn).
+- Layout baseado em App Router (`frontend/src/app`) com componentes reutilizáveis (Radix, Tailwind, shadcn).
 - Documentação consolidada substitui os antigos `AUTH_SYSTEM.md` e `INSTALACAO.md`.
+
+---
+
+## Estrutura de pastas
+
+```
+frontend/          # App Next.js (src, public, configs)
+backend/prisma/    # Schema, migrations e seed do banco
+backend/src/       # Lógica de domínio (services, Prisma helper, util de senhas)
+conexoes/          # Materiais de ambiente (.env.example, AJUSTES.md)
+package.json       # Scripts raiz que orquestram frontend e Prisma
+Dockerfile         # Build/execução considerando a nova estrutura
+```
 
 ---
 
 ## Início rápido
 
 ```bash
+cp .env.example .env         # configure DATABASE_URL, NEXTAUTH_SECRET etc.
 npm install
-npm run dev
-# acessar http://localhost:3000
-```
-
-Credenciais padrão para testes:
-
-```
-Email: admin@super.com
-Senha: Adm1n@36579
+npm run dev                  # http://localhost:3000
 ```
 
 ---
@@ -63,23 +69,27 @@ npm run build
 npm start          # produção
 ```
 
-Ambiente padrão: `http://localhost:3000` (desenvolvimento e produção).
-- Copie `.env.example` para `.env` e ajuste `NEXTAUTH_URL`/`NEXTAUTH_SECRET` quando publicar.
+ Ambiente padrão: `http://localhost:3000` (desenvolvimento e produção).
+- Copie `.env.example` para `.env` na raiz e ajuste as variáveis. O frontend lê esse mesmo arquivo via symlink `frontend/.env` (não há `.env.local` para evitar duplicação).
 
 ---
 
 ## Scripts disponíveis
 
 ```bash
-npm run dev      # servidor Next.js em modo desenvolvimento
-npm run build    # build otimizado para produção
-npm run start    # executa a build em produção
-npm run lint     # verificação ESLint
+npm run dev                # servidor Next.js (frontend/)
+npm run build              # build otimizado para produção
+npm run start              # executa a build em produção
+npm run lint               # verificação ESLint no frontend
+npm run prisma:generate    # gera o client Prisma (backend/prisma/schema.prisma)
+npm run prisma:migrate     # cria/aplica migration em dev
+npm run prisma:migrate:deploy # aplica migrations em produção
+npm run prisma:seed        # roda o seed configurado no Prisma
 npm install      # instala dependências
 npm ci           # instalação determinística (CI/CD)
 ```
 
-- `npx prisma db seed` — cria/atualiza o super admin padrão no banco.
+- `npm run prisma:seed` — cria/atualiza o super admin padrão no banco.
 
 ---
 
@@ -103,21 +113,28 @@ Todas as dependências já estão configuradas e com tipagens incluídas.
 ## Banco de dados e Prisma
 
 - Banco Postgres administrado pelo EasyPanel ou qualquer provedor compatível.
-- Prisma está configurado em `prisma/schema.prisma` e inicializa o client via `src/lib/prisma.ts`.
-- Tabela `User` contém: `id`, `name`, `email`, `company`, `phone`, `plan`, `passwordHash`, `createdAt`, `updatedAt`.
-- Migração inicial disponível em `prisma/migrations/20250102120000_init/migration.sql`.
-- Rode `npx prisma migrate dev` em desenvolvimento ou `npx prisma migrate deploy` no servidor após definir `DATABASE_URL`.
-- Sempre que atualizar o schema execute `npx prisma generate` para sincronizar o client.
+- Prisma configurado em `backend/prisma/schema.prisma`; o client é criado em `backend/src/lib/prisma.ts` e consumido via `@backend/*` nas rotas.
+- Migração única de base em `backend/prisma/migrations/20250102120000_initial_schema/migration.sql`.
 - Variável obrigatória: `DATABASE_URL=postgresql://usuario:senha@host:porta/banco`.
-  - Exemplo fornecido (EasyPanel): `postgres://postgres:obytXa0JehZjR616ogLRroVu9WG0XAe9ovh@postgres_rabbitmq_reservejabanco:5432/reserveja-postgres?sslmode=disable`
-- Execute `npx prisma db seed` para registrar o super admin padrão ou aplicar valores customizados via variáveis `SUPERADMIN_*`.
+  - Use `.env` na raiz em desenvolvimento; em produção/CI prefira variáveis de ambiente (ou o mesmo `.env` se o provedor permitir).
+- Comandos principais:
+  - `npm run prisma:generate` — sincroniza o client.
+  - `npm run prisma:migrate` — aplica migrations no banco apontado pelo `.env.local` (ou `DATABASE_URL` exportado).
+  - `npm run prisma:migrate:deploy` — aplica migrations em produção (usa `DATABASE_URL` do ambiente).
+  - `npm run prisma:seed` — registra/atualiza o super admin (usa `SUPERADMIN_*` do ambiente).
+
+### Ambientes (dev e prod) com Prisma
+
+- Desenvolvimento: configure `DATABASE_URL` no `.env` (raiz). Rode `npm run prisma:migrate` e `npm run prisma:seed`.
+- Produção: defina `DATABASE_URL` via variável de ambiente (ou `.env` se o provedor permitir). Rode `npm run prisma:migrate:deploy` antes de iniciar a aplicação e opcionalmente `npm run prisma:seed` se precisar do super admin.
+- Para alternar entre bancos, troque o valor de `DATABASE_URL` conforme o ambiente. Não guarde segredos no repositório; mantenha apenas `.env.example` com placeholders.
 
 ### Template EasyPanel
 
 1. Crie um serviço Postgres pelo painel e copie o `DATABASE_URL`.
-2. Abra o editor SQL do EasyPanel, cole o conteúdo de `prisma/templates/easypanel-users.sql` e execute para gerar a tabela `User`.
+2. Abra o editor SQL do EasyPanel, cole o conteúdo de `backend/prisma/templates/easypanel-users.sql` e execute para gerar a tabela `User`.
 3. Configure a variável `DATABASE_URL` no container Next.js (ou `.env.local`) usando as credenciais do banco criado.
-4. Opcional: execute `npx prisma db pull` para validar o schema após importar o template.
+4. Opcional: execute `npx prisma db pull --schema ./backend/prisma/schema.prisma` para validar o schema após importar o template.
 
 Senhas são persistidas usando `scrypt` (módulo `node:crypto`) e nunca retornadas pela API; as rotas `/api/auth/register` e `/api/auth/login` operam diretamente no Postgres.
 
@@ -137,21 +154,18 @@ Usuário → Login/Cadastro → AuthContext → localStorage → Dashboard
 ### Estrutura essencial
 
 ```
-src/
-├─ contexts/
-│  └─ AuthContext.tsx        # Estado global (usuário, loading, login, logout)
-├─ app/
-│  ├─ layout.tsx             # Layout principal com ConditionalLayout
-│  ├─ login/page.tsx         # Página de login integrada ao contexto
-│  ├─ cadastro/page.tsx      # Cadastro com reaproveitamento de validações
-│  ├─ dashboard/page.tsx     # Área protegida, exibe sidebar
-│  └─ api/auth/
-│     ├─ login/route.ts      # Endpoint login
-│     └─ register/route.ts   # Endpoint cadastro
-└─ components/
-   ├─ ConditionalLayout.tsx  # Decide quando renderizar sidebar
-   ├─ ProtectedRoute.tsx     # Higher-order component de proteção
-   └─ ui/                    # Inputs, Label, Select, etc.
+frontend/
+├─ src/
+│  ├─ contexts/                 # Estado global (usuário, loading, login, logout)
+│  ├─ app/                      # Páginas, layouts e rotas Next (consumindo serviços do backend)
+│  └─ components/               # UI e helpers
+└─ public/                      # Assets estáticos
+
+backend/
+├─ prisma/                      # Schema, migrations e seed
+└─ src/
+   ├─ lib/                      # Prisma client e util de senha
+   └─ services/                 # Lógicas de domínio usadas pelas rotas (auth, serviços, clientes, dashboard, agendamentos)
 ```
 
 ### Componentes-chave
@@ -167,7 +181,7 @@ src/
 ### Fluxo de autenticação
 
 1. Usuário envia credenciais -> `AuthContext.login`.
-2. Serviço chama `/api/auth/login`, valida (mock) e grava token/usuário no navegador.
+2. Serviço chama `/api/auth/login`, valida no backend (Prisma) e grava token/usuário no navegador.
 3. `ProtectedRoute` libera dashboard enquanto `ConditionalLayout` ativa sidebar.
 4. `logout()` limpa sessão e redireciona para `/login`.
 
@@ -190,7 +204,7 @@ src/
    - Sidebar oculta nas telas públicas.
    - Sidebar visível no dashboard e logout funcionando.
    - Redirecionamentos automáticos conforme autenticado/não autenticado.
-   - Cadastros recém-criados aparecem na tabela `User` (consulta via EasyPanel SQL ou `npx prisma studio`).
+   - Cadastros recém-criados aparecem na tabela `User` (consulta via EasyPanel SQL ou `npx prisma studio --schema ./backend/prisma/schema.prisma`).
 
 ---
 
@@ -201,8 +215,8 @@ src/
 | `Module not found` | `rm -rf node_modules package-lock.json && npm install` |
 | Porta 3000 em uso | `npm run dev -- -p 3001` |
 | Avisos de hidratação | Garanta Node.js 18.20.0+ e reinstale dependências |
-| Erros Prisma/Postgres | Confirme `DATABASE_URL`, se o serviço está ativo no EasyPanel e execute `npx prisma migrate deploy` |
-| Login/Cadastro falha após importar backup | Reaplique `prisma/templates/easypanel-users.sql`, rode `npx prisma db seed` e confirme que `passwordHash` foi gerado pelo utilitário scrypt |
+| Erros Prisma/Postgres | Confirme `DATABASE_URL`, se o serviço está ativo no EasyPanel e execute `npm run prisma:migrate:deploy` |
+| Login/Cadastro falha após importar backup | Reaplique `backend/prisma/templates/easypanel-users.sql`, rode `npm run prisma:seed` e confirme que `passwordHash` foi gerado pelo utilitário scrypt |
 
 ---
 
