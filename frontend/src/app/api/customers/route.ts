@@ -66,7 +66,12 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Erro ao criar cliente:", error);
     return NextResponse.json(
-      { message: "Erro interno ao criar cliente." },
+      {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Erro interno ao criar cliente.",
+      },
       { status: 500 },
     );
   }
@@ -123,7 +128,12 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error("Erro ao atualizar cliente:", error);
     return NextResponse.json(
-      { message: "Erro interno ao atualizar cliente." },
+      {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Erro interno ao atualizar cliente.",
+      },
       { status: 500 },
     );
   }

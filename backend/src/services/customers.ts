@@ -9,6 +9,21 @@ type CustomerDTO = {
   company: string;
 };
 
+const ensureStatusColumn = async () => {
+  // Garante a existência da coluna status como texto, útil se a migration ainda não foi aplicada
+  try {
+    await db.$executeRawUnsafe(
+      'ALTER TABLE "client" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT \'ACTIVE\';',
+    );
+    await db.$executeRawUnsafe(
+      'ALTER TABLE "client" ALTER COLUMN "status" SET DEFAULT \'ACTIVE\';',
+    );
+  } catch (err) {
+    // Se falhar, propagamos para ser tratado mais acima
+    throw err;
+  }
+};
+
 const isSuperAdmin = async (userId: string) => {
   const user = await db.user.findUnique({
     where: { id: userId },
@@ -20,6 +35,7 @@ const isSuperAdmin = async (userId: string) => {
 };
 
 export async function listCustomersByUser(requestingUserId: string) {
+  await ensureStatusColumn();
   const superAdmin = await isSuperAdmin(requestingUserId);
 
   const customers = await db.custumer.findMany({
@@ -44,6 +60,7 @@ export async function createCustomer(
   requestingUserId: string,
   data: { name: string; email: string; phone: string; status?: "ACTIVE" | "INACTIVE" },
 ) {
+  await ensureStatusColumn();
   const superAdmin = await isSuperAdmin(requestingUserId);
   const targetUserId = superAdmin ? requestingUserId : requestingUserId;
 
@@ -62,6 +79,7 @@ export async function updateCustomer(
   requestingUserId: string,
   data: { id: string; name: string; email: string; phone: string; status: "ACTIVE" | "INACTIVE" },
 ) {
+  await ensureStatusColumn();
   const superAdmin = await isSuperAdmin(requestingUserId);
 
   const existing = await db.custumer.findUnique({

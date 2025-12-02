@@ -26,6 +26,7 @@ const Dashboard = () => {
     UpcomingAppointmentCard[]
   >([]);
   const [services, setServices] = useState<ServiceCard[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const Dashboard = () => {
     const loadDashboard = async () => {
       setIsLoading(true);
       try {
+        setError(null);
         const response = await fetch(
           `/api/dashboard?userId=${user.id}`,
           {
@@ -48,7 +50,10 @@ const Dashboard = () => {
         );
 
         if (!response.ok) {
-          throw new Error("Não foi possível carregar o dashboard.");
+          const payload = await response.json().catch(() => null);
+          throw new Error(
+            payload?.message ?? "Não foi possível carregar o dashboard.",
+          );
         }
 
         const payload = await response.json();
@@ -57,20 +62,19 @@ const Dashboard = () => {
         setServices(payload.services ?? []);
 
         // Garantir que a lista de serviços está atualizada (fallback na rota dedicada)
-        const servicesResp = await fetch(
-          `/api/services?userId=${user.id}`,
-          {
-            method: "GET",
-            cache: "no-store",
-            signal: controller.signal,
-          },
-        );
+        const servicesResp = await fetch(`/api/services?userId=${user.id}`, {
+          method: "GET",
+          cache: "no-store",
+          signal: controller.signal,
+        });
         if (servicesResp.ok) {
           const servicesJson = await servicesResp.json();
           setServices(servicesJson.services ?? payload.services ?? []);
         }
       } catch (error) {
+        if (controller.signal.aborted) return;
         console.error("Erro ao carregar dashboard:", error);
+        setError("Não foi possível carregar o dashboard.");
       } finally {
         setIsLoading(false);
       }
@@ -111,6 +115,9 @@ const Dashboard = () => {
         <div className="p-6 text-sm text-muted-foreground">
           Atualizando dados do dashboard...
         </div>
+      )}
+      {error && !isLoading && (
+        <div className="p-6 text-sm text-red-500">{error}</div>
       )}
     </ProtectedRoute>
   );
