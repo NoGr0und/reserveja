@@ -8,6 +8,7 @@ export type AppointmentRow = {
   serviceName: string;
   requestedAt: string;
   scheduledFor: string;
+  status: string;
 };
 
 const formatDate = (
@@ -48,5 +49,30 @@ export const AppointmentColumns: ColumnDef<AppointmentRow>[] = [
       formatDate(getValue() as string, {
         dateStyle: "full",
       }),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ getValue, table, row }) => {
+      const onEdit = (table.options.meta as any)?.onEdit as
+        | ((appointment: AppointmentRow) => void)
+        | undefined;
+      const value = (getValue() as string) ?? "";
+      const map: Record<string, { label: string; className: string }> = {
+        CONFIRMED: { label: "Confirmado", className: "text-green-500" },
+        PENDING: { label: "Pendente", className: "text-yellow-400" },
+        CANCELLED: { label: "Cancelado", className: "text-red-500" },
+      };
+      const entry = map[value] ?? { label: value || "Pendente", className: "text-yellow-400" };
+      return (
+        <button
+          type="button"
+          onClick={() => onEdit?.(row.original)}
+          className="underline-offset-2 hover:underline"
+        >
+          <span className={entry.className}>{entry.label}</span>
+        </button>
+      );
+    },
   },
 ];

@@ -1,5 +1,16 @@
 import { db } from "../lib/prisma";
 
+const ensureAppointmentStatusColumn = async () => {
+  try {
+    await db.$executeRawUnsafe(
+      'ALTER TABLE "Appointment" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT \'PENDING\';',
+    );
+  } catch (err) {
+    // Se não conseguir aplicar, seguirá a consulta e o erro será tratado no caller
+    console.error("Falha ao garantir coluna status em Appointment:", err);
+  }
+};
+
 const startOfDay = (date: Date) => {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -13,6 +24,8 @@ const endOfDay = (date: Date) => {
 };
 
 export async function loadDashboard(userId: string) {
+  await ensureAppointmentStatusColumn();
+
   const todayStart = startOfDay(new Date());
   const todayEnd = endOfDay(new Date());
 

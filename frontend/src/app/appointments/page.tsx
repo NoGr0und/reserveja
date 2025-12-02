@@ -31,6 +31,7 @@ const AppointmentsPage = () => {
     customerId: "",
     serviceId: "",
     scheduledFor: "",
+    status: "PENDING",
   });
 
   useEffect(() => {
@@ -123,33 +124,56 @@ const AppointmentsPage = () => {
 
   const tableData = useMemo(() => appointments, [appointments]);
 
-  const handleCreate = async () => {
+  const [editingAppointment, setEditingAppointment] = useState<AppointmentRow | null>(null);
+
+  const openEdit = (appointment: AppointmentRow) => {
+    setEditingAppointment(appointment);
+    setFormValues({
+      customerId: "",
+      serviceId: "",
+      scheduledFor: appointment.scheduledFor ? appointment.scheduledFor.slice(0, 16) : "",
+      status: (appointment.status as any) || "PENDING",
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async () => {
     if (!user?.id) return;
     setIsLoading(true);
     setError(null);
 
     try {
+      const method = editingAppointment ? "PUT" : "POST";
       const response = await fetch(`/api/appointments?userId=${user.id}`, {
-        method: "POST",
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerId: formValues.customerId,
-          serviceId: formValues.serviceId,
-          scheduledFor: formValues.scheduledFor,
+          id: editingAppointment?.id,
+          customerId: formValues.customerId || undefined,
+          serviceId: formValues.serviceId || undefined,
+          scheduledFor: formValues.scheduledFor || undefined,
+          status: formValues.status,
         }),
       });
       const json = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(json?.message || "Não foi possível criar o agendamento.");
+        throw new Error(json?.message || "Não foi possível salvar o agendamento.");
       }
 
       if (json.appointment) {
-        setAppointments((prev) => [json.appointment, ...prev]);
+        if (editingAppointment) {
+          setAppointments((prev) =>
+            prev.map((a) => (a.id === editingAppointment.id ? json.appointment : a)),
+          );
+        } else {
+          setAppointments((prev) => [json.appointment, ...prev]);
+        }
       }
       setIsModalOpen(false);
-      setFormValues({ customerId: "", serviceId: "", scheduledFor: "" });
+      setEditingAppointment(null);
+      setFormValues({ customerId: "", serviceId: "", scheduledFor: "", status: "PENDING" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro inesperado ao criar.");
+      setError(err instanceof Error ? err.message : "Erro inesperado ao salvar.");
     } finally {
       setIsLoading(false);
     }
@@ -175,7 +199,9 @@ const AppointmentsPage = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Criar agendamento</DialogTitle>
+                <DialogTitle>
+                  {editingAppointment ? "Editar agendamento" : "Criar agendamento"}
+                </DialogTitle>
               </DialogHeader>
               <div className="space-y-4 py-2">
                 <div className="space-y-2">
@@ -224,12 +250,28 @@ const AppointmentsPage = () => {
                     }
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <Select
+                    value={formValues.status}
+                    onValueChange={(val) => setFormValues((v) => ({ ...v, status: val }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PENDING">Pendente</SelectItem>
+                      <SelectItem value="CONFIRMED">Confirmado</SelectItem>
+                      <SelectItem value="CANCELLED">Cancelado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsModalOpen(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={handleCreate} disabled={isLoading}>
+                <Button onClick={handleSave} disabled={isLoading}>
                   {isLoading ? "Salvando..." : "Salvar"}
                 </Button>
               </DialogFooter>
@@ -241,7 +283,11 @@ const AppointmentsPage = () => {
         {error && !isLoading && <p className="text-sm text-red-500">{error}</p>}
 
         {!isLoading && !error && (
-          <DataTable columns={AppointmentColumns} data={tableData} />
+          <DataTable
+            columns={AppointmentColumns}
+            data={tableData}
+            meta={{ onEdit: openEdit }}
+          />
         )}
       </div>
     </ProtectedRoute>
