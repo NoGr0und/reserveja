@@ -33,7 +33,7 @@ export async function loadDashboard(userId: string) {
     appointmentsToday,
     totalServices,
     activeServices,
-    customersAttended,
+    customerIds,
     revenueAppointments,
     upcomingAppointments,
     services,
@@ -46,9 +46,9 @@ export async function loadDashboard(userId: string) {
     }),
     db.service.count({ where: { userId } }),
     db.service.count({ where: { userId, type: "ACTIVE" } }),
-    db.appointment.count({
+    db.appointment.findMany({
       where: { userId },
-      distinct: ["customerId"],
+      select: { customerId: true },
     }),
     db.appointment.findMany({
       where: { userId },
@@ -76,6 +76,7 @@ export async function loadDashboard(userId: string) {
     (sum, appointment) => sum + (appointment.service?.price ?? 0),
     0,
   );
+  const customersAttended = new Set(customerIds.map((c) => c.customerId)).size;
 
   return {
     metrics: {
