@@ -19,11 +19,16 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [captchaAnswer, setCaptchaAnswer] = useState("");
-  const [captchaQuestion] = useState(() => {
+  const [captchaQuestion, setCaptchaQuestion] = useState<{
+    text: string;
+    result: number;
+  } | null>(null);
+
+  useEffect(() => {
     const a = Math.floor(Math.random() * 5) + 1;
     const b = Math.floor(Math.random() * 5) + 1;
-    return { text: `${a} + ${b}`, result: a + b };
-  });
+    setCaptchaQuestion({ text: `${a} + ${b}`, result: a + b });
+  }, []);
 
   // Redirecionar se já estiver autenticado
   useEffect(() => {
@@ -44,10 +49,12 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    const isCaptchaValid = Number(captchaAnswer) === captchaQuestion.result;
-    if (!isCaptchaValid) {
-      setError("Confirme que você não é um robô (responda o desafio).");
-      return;
+    if (captchaQuestion) {
+      const isCaptchaValid = Number(captchaAnswer) === captchaQuestion.result;
+      if (!isCaptchaValid) {
+        setError("Confirme que você não é um robô (responda o desafio).");
+        return;
+      }
     }
 
     const result = await login(formData.email, formData.password);
@@ -116,7 +123,7 @@ export default function LoginPage() {
               </Label>
               <div className="flex items-center gap-3">
                 <span className="rounded-md bg-gray-100 px-3 py-2 text-sm text-gray-800">
-                  {captchaQuestion.text}
+                  {captchaQuestion?.text ?? "Carregando..."}
                 </span>
                 <Input
                   id="captcha"

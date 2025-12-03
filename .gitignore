@@ -43,10 +43,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/app/generated/prisma
-
-.AJUSTES.md
-.vscode/
+# IDEs and editors
 .idea/
 *.suo
 *.ntvs*
